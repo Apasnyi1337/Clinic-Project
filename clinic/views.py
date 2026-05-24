@@ -4,4 +4,4 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def main_page(request):
-    return HttpResponse("<h1>Привет! Это главная страница нашей ветклиники!</h1>")
+    return render(request, 'clinic/index.html')
