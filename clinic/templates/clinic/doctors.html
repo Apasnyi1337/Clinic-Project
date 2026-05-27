@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши врачи — Ветклиника</title>
+    <link rel="stylesheet" href="{% static "clinic/style.css" %}">
+</head>
+<body>
+    <header>
+        <h1>Наши специалисты</h1>
+        <p>
+            <a href="{% url 'index' %}">Главная страница</a> |
+            <strong>Наши врачи</strong>
+        </p>
+    </header>
+
+    <hr>
+
+    <main>
+        <div class="doctors-grid">
+            {% for doctor in doctors %}
+                <div style="background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <h3>
+                         <a href="{% url 'doctor_detail' pk=doctor.pk %}">
+                            {{ doctor.full_name }}
+                        </a>
+                    </h3>
+                    <p><strong>Специализация:</strong> {{ doctor.specialty }}</p>
+                    <p><strong>Стаж работы:</strong> {{ doctor.experience }} лет</p>
+                </div>
+            {% empty %}
+                <p>В клинике пока нет зарегистрированных врачей.</p>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>

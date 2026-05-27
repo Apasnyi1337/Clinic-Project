@@ -1,23 +1,50 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Ветклиника "Верный друг"</title>
+    <link rel="stylesheet" href="{% static 'clinic/style.css' %}">
 </head>
 <body>
     <header>
         <h1>Добро пожаловать в ветклинику "Верный друг"!</h1>
         <p>Мы заботимся о ваших питомцах 24 часа в сутки, 7 дней в неделю.</p>
+        <p>
+            <strong>Главная</strong> |
+            <a href="{% url 'doctors_list' %}">Наши врачи</a>
+        </p>
     </header>
 
-    <hr> <main>
-        <h2>Наши основные услуги:</h2>
+    <hr>
+    <main>
+        <h2>Наши основные услуги (актуальные цены):</h2>
         <ul>
-            <li>Первичный осмотр и терапия</li>
-            <li>Вакцинация и чипирование</li>
-            <li>Хирургия и травматология</li>
-            <li>Собственная лаборатория (анализы за 15 минут)</li>
+            {% for service in services %}
+                <li>
+                    <a href="{% url 'service_detail' pk=service.pk %}">
+                        <strong>{{ service.title }}</strong>
+                    </a> — {{ service.price }} руб.
+                    <br>
+                    <small>{{ service.description }}</small>
+                </li>
+                <br> {% empty %}
+                <li>К сожалению, список услуг временно пуст.</li>
+            {% endfor %}
         </ul>
+        <hr>
+
+    <section>
+        <h2>Запись на онлайн-прием:</h2>
+
+        <form method="post" action="">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">Записаться на прием</button>
+        </form>
+    </section>
     </main>
 
     <footer>

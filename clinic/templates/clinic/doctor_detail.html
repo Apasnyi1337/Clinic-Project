@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание: {{ doctor.full_name }}</title>
+    <link rel="stylesheet" href="{% static "clinic/style.css" %}">
+</head>
+<body>
+    <header>
+        <h1>Профиль специалиста</h1>
+        <p><a href="{% url 'doctors_list' %}">← Назад к списку врачей</a></p>
+    </header>
+
+    <hr>
+
+    <main>
+        <h2>{{ doctor.full_name }} ({{ doctor.specialty }})</h2>
+
+        <h3>Пациенты, записанные на прием:</h3>
+        <ul>
+            {% for app in appointments %}
+                <li>
+                    Питомец: <strong>{{ app.pet_name }}</strong> (Владелец: {{ app.client_name }})
+                    — Номер телефона: {{ app.phone }}
+                    <br>
+                    <small>Услуга: {{ app.service.title }}</small>
+                </li>
+                <br>
+            {% empty %}
+                <li>К этому врачу пока никто не записался. Будьте первыми!</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
