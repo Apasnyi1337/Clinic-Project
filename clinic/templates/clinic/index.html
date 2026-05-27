@@ -12,7 +12,22 @@
         <p>Мы заботимся о ваших питомцах 24 часа в сутки, 7 дней в неделю.</p>
         <p>
             <strong>Главная</strong> |
-            <a href="{% url 'doctors_list' %}">Наши врачи</a>
+            <a href="{% url 'doctors_list' %}">Наши врачи</a> |
+
+            {% if user.is_authenticated %}
+                Добро пожаловать, <strong>{{ user.username }}</strong>!
+
+                <form method="post" action="{% url 'logout' %}" style="display: inline; margin-left: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: #0066cc; text-decoration: underline; cursor: pointer; padding: 0;">
+                        Выйти
+                    </button>
+                </form>
+
+            {% else %}
+                <a href="{% url 'login' %}">Войти в кабинет</a> |
+                <a href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
         </p>
     </header>
 
@@ -40,8 +55,19 @@
         <form method="post" action="">
             {% csrf_token %}
 
-            {{ form.as_p }}
+            {% if form.errors %}
+                <div style="color: red; background: #fee; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+                    <strong>Пожалуйста, исправьте ошибки в форме:</strong>
+                    {{ form.non_field_errors }}
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <p>{{ field.label }}: {{ field.errors|striptags }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
 
+            {{ form.as_p }}
             <button type="submit">Записаться на прием</button>
         </form>
     </section>

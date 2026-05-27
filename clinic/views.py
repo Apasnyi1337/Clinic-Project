@@ -1,10 +1,11 @@
+from .forms import AppointmentForm
 from django.shortcuts import render, get_object_or_404
-
+from django.contrib.auth.forms import UserCreationForm  # Импортируем встроенную форму регистрации
+from django.contrib.auth import login as auth_login    # Импортируем функцию для автоматического входа
 # Create your views here.
 from django.http import HttpResponse
 
 from clinic.models import Service, Doctor, Appointment
-from .forms import AppointmentForm
 from django.shortcuts import render, redirect
 
 def main_page(request):
@@ -14,10 +15,11 @@ def main_page(request):
         if form.is_valid(): # Проверяем, всё ли заполнено корректно
             form.save() # МАГИЯ: Django сам создает запись в базе данных!
             return redirect('index') # Перезагружаем страницу, чтобы форма очистилась
+   # Если пользователь просто открыл страницу (метод GET), создаем пустую форму
+    else:
+        form = AppointmentForm()
     # 2. Просим Django забрать вообще все записи об услугах из базы данных.
     # На языке SQL это звучит как: "SELECT * FROM clinic_service;"
-
-    form = AppointmentForm() # Если пользователь просто открыл страницу (метод GET), создаем пустую форму
     all_services = Service.objects.all()
 
     # 3. Упаковываем эти услуги в специальный ящик (называется "контекст").
@@ -49,3 +51,18 @@ def doctors_detail(request, pk):
     appointments = doctor.appointment_set.all()
     context = {'appointments': appointments, 'doctor': doctor}
     return render(request, 'clinic/doctor_detail.html', context)
+
+def register_view(request):
+    # Если пользователь отправил заполненную форму (нажал кнопку "Зарегистрироваться")
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+    # Сохраняем нового пользователя в базу данных
+            user = form.save()
+    # Нам знакома эта магия: автоматически логиним пользователя сразу после регистрации
+            auth_login(request, user)
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+    context = {'form': form}
+    return render(request, 'clinic/register.html', context)

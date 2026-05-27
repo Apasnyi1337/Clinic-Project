@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация в ветклинике</title>
+    <link rel="stylesheet" href="{% static "clinic/style.css" %}">
+</head>
+<body>
+    <header>
+        <h1>Регистрация нового пользователя</h1>
+        <p><a href="{% url 'index' %}">← На главную</a></p>
+    </header>
+
+    <hr>
+
+    <main>
+        <form method="post" action="">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+        <p style="margin-top: 20px;">
+            Уже есть аккаунт? <a href="{% url 'login' %}">Войти здесь</a>
+        </p>
+    </main>
+</body>
+</html>
